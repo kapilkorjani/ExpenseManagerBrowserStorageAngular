@@ -1,0 +1,83 @@
+<div class="row pt-5" >
+    <div class="col-md-6 mx-auto">
+        <div class="alert alert-success alert-dismissible" role="alert" *ngIf="expenseMsg">
+            <button type="button" class="close" (click)="close()">&times;</button>
+            Expense Added successfully.
+        </div>
+        <div class="card rounded-0">
+            <div class="card-header">
+                <h3 class="mb-0">{{operation}} Expense</h3>
+            </div>
+            <div class="card-body">
+                <form class="form" [formGroup]="expenseForm" (submit)="addExpense(expenseForm.value)" autocomplete="off">
+                    <div class="form-group">
+                        <label for="">Type</label>
+                        <select class="form-control rounded-0" formControlName="type" name="type" id="type">
+                            <option value="cash">Cash</option>
+                            <option value="online">Online</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Friends</label>
+                        <button type="button" class="btn btn-secondary btn-sm m-2" (click)="addFriend()">Add Friend</button>
+                        <button type="button" class="btn btn-secondary btn-sm m-2" (click)="removeFriend()">Remove Friend</button>
+                        <div formArrayName="friends" *ngFor="let friend of friends.controls; let i = index">
+                          <input type="text"  class="form-control my-1"  [formControlName]="i" required> 
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="">Expense Name</label>
+                        <input type="text" [class.is-invalid]="name.invalid &&
+                        name.touched" formControlName="name" name="name" class="form-control rounded-0" required>
+                        <div *ngIf="name.invalid && name.touched">
+                            <small class="text-danger" *ngIf="name.errors?.required"> Please enter Expense Name</small>
+                            <small class="text-danger" *ngIf="name.errors?.minlength">Expense Name must be atleast 3 characters</small>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="">Date</label>
+                        <input [class.is-invalid]="date.invalid &&
+                        date.touched" formControlName="date" name="date" type="date" class="form-control rounded-0" required>
+                        <div *ngIf="date.invalid && date.touched">
+                            <small class="text-danger" *ngIf="date.errors?.required"> Please enter Date</small>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="">Amount</label>
+                        <input [class.is-invalid]="amount.invalid &&
+                        amount.touched" formControlName="amount" name="amount" type="number" class="form-control rounded-0" required>
+                        <div *ngIf="amount.invalid && amount.touched">
+                            <small class="text-danger" *ngIf="amount.errors?.required"> Please enter Amount</small>
+                        </div>
+                    </div>
+                    <button [disabled]="expenseForm.invalid" type="submit" class="btn btn-primary float-right">{{operation}} Expense</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="pt-5">
+    <table class="table">
+        <thead>
+            <tr>
+                <th scope="col">Type</th>
+                <th scope="col">Friends</th>
+                <th scope="col">Expense Name</th>
+                <th scope="col">Date</th>
+                <th scope="col">Amount</th>
+                <th scope="col" colspan="2">Operation</th>
+                </tr>
+        </thead>
+        <tbody *ngFor="let expense of expenseDetails;let i = index">
+            <tr>
+                <td scope="row">{{expense.type}}</td>
+                <td><div *ngFor="let friend of expense.friends">{{friend}}</div></td>
+                <td>{{expense.name}}</td>
+                <td>{{expense.date}}</td>
+                <td>{{expense.amount}}</td>
+                <td><button (click)="updateExpense(expense)">Update</button></td>
+                <td><button (click)="deleteExpense(expense)">Delete</button></td>
+                </tr>
+        </tbody>
+    </table>
+</div>
